@@ -1,0 +1,9 @@
+{
+    "apiKey": "AIzaSyDksWd157buL54xNUY-cG14mcwZ8HbOijo",
+    "authDomain": "pocket-plant.firebaseapp.com",
+    "databaseURL": "https://pocket-plant-default-rtdb.firebaseio.com",
+    "projectId": "pocket-plant",
+    "storageBucket": "pocket-plant.appspot.com",
+    "messagingSenderId": "703093567576",
+    "appId": "1:703093567576:web:62383c24b7b21982649a2d"
+}
