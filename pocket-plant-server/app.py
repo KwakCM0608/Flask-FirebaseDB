@@ -38,13 +38,13 @@ def signin_done():
         return http_response_code['error401']
     '''
 
-@app.route("/plant_list", methods = ["/GET"])
+@app.route("/plant_list", methods = ["GET"])
 def plant_list():
     uid = request.args.get("uid")
     if DB.get_user(uid):
         pass
 
-@app.route("/create_plant", methods = ["/GET"])
+@app.route("/create_plant", methods = ["GET", "POST"])
 def create_plant():
     uid = request.args.get("uid")
     plantname = request.args.get("plantname")
@@ -52,25 +52,25 @@ def create_plant():
     if DB.get_user(uid):
         pass
 
-@app.route("/grow_rate", methods = ["/GET"])
+@app.route("/grow_rate", methods = ["GET"])
 def grow_rate():
     uid = request.args.get("uid")
     plantname = request.args.get("plantname")
     pass
 
-@app.route("/plant_age", methods = ["/GET"])
+@app.route("/plant_age", methods = ["GET"])
 def plant_age():
     uid = request.args.get("uid")
     plantname = request.args.get("plantname")
     pass
 
-@app.route("/plant_liferate", methods = ["/GET"])
+@app.route("/plant_liferate", methods = ["GET"])
 def plant_liferate():
     uid = request.args.get("uid")
     plantname = request.args.get("plantname")
     pass
 
-@app.route("/sensor_data", methods = ["/GET"]) 
+@app.route("/sensor_data", methods = ["GET", "POST"]) 
 def sensor_data():
     # json_data : {temp : value, hum : value, light : value, dusthum : value}
     uid = request.args.get("uid")
