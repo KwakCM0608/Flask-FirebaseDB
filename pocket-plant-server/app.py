@@ -4,6 +4,7 @@ from DB_handler import DBModule
 from http_codes import http_response_code
 
 app = Flask(__name__)
+app.secret_key = 'abcdefghijklmnopqrstuvwxyz'
 DB = DBModule()
 
 @app.route("/")
@@ -18,17 +19,23 @@ def post_list():
 def post(pid):
     pass
 
-# http://192.168.0.43:5000/login_done?id=gjlee0802&pwd=08023384
+# http://0.0.0.0:5000/login_done?id=gjlee0802&pwd=08023384
 @app.route("/login_done")
 def login_done():
     uid = request.args.get("id")
     pwd = request.args.get("pwd")
     if DB.login(uid,pwd):
+        session['user'] = uid
         return http_response_code['success200']
     else:
         return http_response_code['error401']
 
-# http://192.168.0.43:5000/signin_done?id=gjlee0802&pwd=08023384&name=이경주&email=gjlee0802@naver.com
+@app.route("/logout_done")
+def logout_done():
+    session.pop('user', None)
+    return http_response_code['success200']
+
+# http://0.0.0.0:5000/signin_done?id=gjlee0802&pwd=08023384&name=이경주&email=gjlee0802@naver.com
 @app.route("/signin_done", methods = ["GET"])
 def signin_done():
     uid = request.args.get("id")
@@ -40,42 +47,51 @@ def signin_done():
     else:
         return http_response_code['error401']
 
+# http://0.0.0.0:5000/plant_list?id=gjlee0802
 @app.route("/plant_list", methods = ["GET"])
 def plant_list():
-    uid = request.args.get("uid")
-    if DB.get_user(uid):
-        pass
+    uid = request.args.get("id")
+    if 'user' in session:
+        if session['user'] == uid:
+            DB.plant_list(uid)
+            return "test"                   # Should return json { plantid1 : {...}, plantid2 : {...} }
 
+    return http_response_code['error401']
+
+# http://0.0.0.0:5000/create_plant?id=gjlee0802&plantname=MyPlant&plantkind=Cactus
 @app.route("/create_plant", methods = ["GET", "POST"])
 def create_plant():
-    uid = request.args.get("uid")
+    uid = request.args.get("id")
     plantname = request.args.get("plantname")
     plantkind = request.args.get("plantkind")
-    if DB.get_user(uid):
-        pass
+    if 'user' in session:
+        if session['user'] == uid:
+            if DB.create_plant(uid, plantname, plantkind):
+                return "create_plant success"
+    return http_response_code['error401']
 
 @app.route("/grow_rate", methods = ["GET"])
 def grow_rate():
-    uid = request.args.get("uid")
+    uid = request.args.get("id")
     plantname = request.args.get("plantname")
     pass
 
 @app.route("/plant_age", methods = ["GET"])
 def plant_age():
-    uid = request.args.get("uid")
+    uid = request.args.get("id")
     plantname = request.args.get("plantname")
     pass
 
 @app.route("/plant_liferate", methods = ["GET"])
 def plant_liferate():
-    uid = request.args.get("uid")
+    uid = request.args.get("id")
     plantname = request.args.get("plantname")
     pass
 
 @app.route("/sensor_data", methods = ["GET", "POST"]) 
 def sensor_data():
     # json_data : {temp : value, hum : value, light : value, dusthum : value}
-    uid = request.args.get("uid")
+    uid = request.args.get("id")
     reqjson = json.loads(request.get_data().decode())
     temp = reqjson['temp']
     hum = reqjson['hum']
