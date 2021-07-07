@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, url_for, request, jsonify
+from flask import Flask, redirect, render_template, url_for, request, jsonify, session
 from DB_handler import DBModule
 
 from http_codes import http_response_code
@@ -18,25 +18,27 @@ def post_list():
 def post(pid):
     pass
 
+# http://192.168.0.43:5000/login_done?id=gjlee0802&pwd=08023384
 @app.route("/login_done")
 def login_done():
-    pass
-
-# http://0.0.0.0:5000/signin_done?email=gjlee0802@naver.com&id=gjlee0802&pwd=08023384&name=이경주
-@app.route("/signin_done", methods = ["GET"])
-def signin_done():
-    email = request.args.get("email")
     uid = request.args.get("id")
     pwd = request.args.get("pwd")
-    name = request.args.get("name")
-    print(email, uid, pwd, name)
-    return "success"
-    '''
-    if DB.signin(email, uid, pwd, name):
+    if DB.login(uid,pwd):
         return http_response_code['success200']
     else:
         return http_response_code['error401']
-    '''
+
+# http://192.168.0.43:5000/signin_done?id=gjlee0802&pwd=08023384&name=이경주&email=gjlee0802@naver.com
+@app.route("/signin_done", methods = ["GET"])
+def signin_done():
+    uid = request.args.get("id")
+    pwd = request.args.get("pwd")
+    name = request.args.get("name")
+    email = request.args.get("email")
+    if DB.signin(uid, pwd, name, email):
+        return http_response_code['success200']
+    else:
+        return http_response_code['error401']
 
 @app.route("/plant_list", methods = ["GET"])
 def plant_list():
