@@ -33,7 +33,7 @@ class DBModule:
             "pwd" : pwd,
             "uname" : name,
             "email" : email
-            #"plant_list" : {},
+            #"plant_list" : {}
         }
         self.db.child("users").child(id).set(information)
         return True
@@ -52,7 +52,7 @@ class DBModule:
             return {} # Should be return other else
 
     def create_plant(self, id, plantname, plantkind):
-        pid = str(uuid.uuid4())[:10]     # plantid
+        pid = str(uuid.uuid4())[:10]     # Plant id
         print("Create plant id : " + pid)
         information = {
             "owner_id" : id,
@@ -65,16 +65,24 @@ class DBModule:
         }
         information['max_height'] = 30
         self.db.child("plants").child(pid).set(information)
-        return True
+        return pid
 
-    def write_post(self, writer, contents):
-        pass
+    def put_sensor_data(self, id, pid, reqjson, temp, hum, light, dusthum):
+        if self.is_valid_plantid, pid):
+            information = {
+                "temp": "minsu",
+                "server_timestamp": {
+                    ".sv": "timestamp"
+                },
+                "value": "안녕하세요"
+            }
+            self.db.child("sensor_data").child(pid).set(information)
+            return True
+        else:
+            return False
 
-    def post_list(self):
-        pass
-    
-    def post_detail(self, pid): # post id
-        pass
-    
-    def get_user(self, uid): # user id
+    def is_valid_plant(self, id, pid):
+        return True # Not complete
+
+    def get_user(self, id):
         pass

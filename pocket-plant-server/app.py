@@ -53,8 +53,8 @@ def plant_list():
     uid = request.args.get("id")
     if 'user' in session:
         if session['user'] == uid:
-            DB.plant_list(uid)
-            return "test"                   # Should return json { plantid1 : {...}, plantid2 : {...} }
+            response = DB.plant_list(uid)
+            return jsonify(response)                   # Should return json : { plantid1 : {...}, plantid2 : {...} }
 
     return http_response_code['error401']
 
@@ -66,10 +66,11 @@ def create_plant():
     plantkind = request.args.get("plantkind")
     if 'user' in session:
         if session['user'] == uid:
-            if DB.create_plant(uid, plantname, plantkind):
-                return "create_plant success"
+            return DB.create_plant(uid, plantname, plantkind)      # Return plant id
     return http_response_code['error401']
 
+'''
+Maybe unnecessary functions?
 @app.route("/grow_rate", methods = ["GET"])
 def grow_rate():
     uid = request.args.get("id")
@@ -87,18 +88,23 @@ def plant_liferate():
     uid = request.args.get("id")
     plantname = request.args.get("plantname")
     pass
+'''
 
+# 
 @app.route("/sensor_data", methods = ["GET", "POST"]) 
 def sensor_data():
-    # json_data : {temp : value, hum : value, light : value, dusthum : value}
-    uid = request.args.get("id")
-    reqjson = json.loads(request.get_data().decode())
+    # json_data : {id : userid, pid : plantid, temp : value, hum : value, light : value, dusthum : value}
+    reqjson = json.loads(request.get_data().decode())   # Load json
+    uid = reqjson['id']
+    pid = reqjson['pid']
     temp = reqjson['temp']
     hum = reqjson['hum']
     light = reqjson['light']
     dusthum = reqjson['dusthum']
-    if DB.put_sensor_data(uid, reqjson, temp, hum, light, dusthum):
-        pass
+    if DB.put_sensor_data(uid, pid, reqjson, temp, hum, light, dusthum):     # Put json into DB
+        return http_response_code['success200']
+    else:
+        return http_response_code['error401']
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
