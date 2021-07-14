@@ -3,9 +3,12 @@ from DB_handler import DBModule
 
 from http_codes import http_response_code
 
+from Plant_handler import PlantUpdate
+
 app = Flask(__name__)
 app.secret_key = 'abcdefghijklmnopqrstuvwxyz'
 DB = DBModule()
+PU = PlantUpdate()
 
 @app.route("/")
 def index():
@@ -90,11 +93,11 @@ def plant_liferate():
     pass
 '''
 
-# 
+# Security Problem
 @app.route("/sensor_data", methods = ["GET", "POST"]) 
 def sensor_data():
     # json_data : {id : userid, pid : plantid, temp : value, hum : value, light : value, dusthum : value}
-    reqjson = json.loads(request.get_data().decode())   # Load json
+    reqjson = request.get_json()#json.loads(request.get_data().decode())   # Load json
     uid = reqjson['id']
     pid = reqjson['pid']
     temp = reqjson['temp']

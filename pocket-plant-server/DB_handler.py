@@ -68,19 +68,30 @@ class DBModule:
         return pid
 
     def put_sensor_data(self, id, pid, reqjson, temp, hum, light, dusthum):
-        if self.is_valid_plantid, pid):
+        if self.is_valid_plant(id, pid):
             information = {
-                "temp": "minsu",
                 "server_timestamp": {
                     ".sv": "timestamp"
                 },
-                "value": "안녕하세요"
+                "id" : id,
+                "temp" : temp,
+                "hum" : hum,
+                "light" : light
             }
-            self.db.child("sensor_data").child(pid).set(information)
+            newkey = len(self.get_sensor_data(pid))
+            self.db.child("sensor_data").child(pid).child(newkey).set(information)
             return True
         else:
             return False
 
+    def get_sensor_data(self, pid):
+        query = self.db.child("sensor_data").order_by_value()
+        plantinfo = query.get().val()
+        if plantinfo is not None:
+            return plantinfo[pid]
+        else:
+            return {} # Should be return other else
+    
     def is_valid_plant(self, id, pid):
         return True # Not complete
 
